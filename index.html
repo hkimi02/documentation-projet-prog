@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation du Code - Système de Gestion de Recharge de Voitures Électriques</title>
+    <!-- Inclusion de Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inclusion de la bibliothèque jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Inclusion de la bibliothèque highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        // Initialiser highlight.js
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+        });
+    </script>
+</head>
+
+<body class="flex">
+
+    <!-- Barre de navigation latérale -->
+    <div class="sidebar bg-green-700 text-white w-64 min-h-screen fixed">
+        <div class="flex flex-col items-center py-4">
+            <img src="imgs/Logo_ENICarthage.jpg" alt="Logo Gauche" class="w-24 mb-4">
+            <nav class="flex flex-col w-full">
+                <a href="#introduction" class="py-2 px-4 hover:bg-green-800">Introduction</a>
+                <a href="#data-structures" class="py-2 px-4 hover:bg-green-800">Structures de Données</a>
+                <a href="#functions" class="py-2 px-4 hover:bg-green-800">Fonctions</a>
+                <a href="#main-function" class="py-2 px-4 hover:bg-green-800">Fonction Principale</a>
+                <a href="#class-diagram" class="py-2 px-4 hover:bg-green-800">Diagramme de Classe</a>
+                <a href="#download-pdf" class="py-2 px-4 hover:bg-green-800">Télécharger PDF</a>
+            </nav>
+            <img src="imgs/c languagepng.png" alt="Logo Droite" class="w-24 mt-auto mb-4">
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="main-content ml-64 p-6 flex-1">
+        <header class="flex justify-center items-center mb-8 border-b-2 border-green-700">
+            <h1 class="text-3xl font-bold text-green-700">Documentation du Système de Gestion de Recharge de Voitures
+                Électriques</h1>
+        </header>
+        <section class="mb-8">
+            <h3 class="text-2xl font-bold text-green-700">
+                groupe : grp A <br />
+                numero de binome : 10 <br />
+            </h3>
+            <h2 class="text-2xl font-bold text-green-700">Réalise par : </h2>
+            <ul class="text-2xl font-bold text-green-700">
+                <li>Hkimi Mohamed Amin</li>
+                <li>Makrem </li>
+                <li>Zied</li>
+            </ul>
+        </section>
+        <section id="introduction" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-700 mb-4">1. Introduction</h2>
+            <p>Ce document présente le système de gestion de recharge de voitures électriques, décrivant les structures
+                de données et les méthodes utilisées pour faciliter la recherche, la réservation et le paiement pour les
+                utilisateurs.</p>
+        </section>
+
+        <section id="data-structures" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-700 mb-4">2. Structures de Données</h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Structure <code>type_de_chargeur</code></h3>
+                <pre><code class="c">
+struct type_de_chargeur {
+    char nom[50];        // Par exemple : "Type 2", "CHAdeMO", "CCS"
+    int puissance;       // Puissance en kW
+};
+typedef struct type_de_chargeur TYPE_CHARGEUR;
+                </code></pre>
+                <p>Cette structure représente un type de chargeur pour les voitures électriques. Elle inclut le nom du
+                    chargeur et sa puissance en sortie.</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Structure <code>station</code></h3>
+                <pre><code class="c">
+struct station {
+    char nom[100];      // Nom de la station
+    char adresse[100];  // Adresse de la station
+    TYPE_CHARGEUR chargeur;  // Le type de chargeur disponible à la station
+};
+typedef struct station STATION;
+                </code></pre>
+                <p>Cette structure représente une station de recharge, incluant son nom, son adresse et le type de
+                    chargeur qu'elle propose.</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Structure <code>voiture</code></h3>
+                <pre><code class="c">
+struct voiture {
+    char modele[100];               // Modèle de la voiture
+    char serie[100];                // Série ou version de la voiture
+    TYPE_CHARGEUR* chargeur;        // Type de chargeur de la voiture
+    int nb_chargements_prec;        // Nombre de chargements précédents
+    STATION* station_prec;          // Station de recharge précédente
+};
+typedef struct voiture VOITURE;
+                </code></pre>
+                <p>Cette structure représente une voiture électrique, incluant son modèle, sa série, le type de chargeur
+                    qu'elle utilise, le nombre de chargements précédents et la station de recharge précédente.</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Structure <code>client</code></h3>
+                <pre><code class="c">
+struct client {
+    char nom_prenom[100];          // Nom et prénom du client
+    VOITURE* liste_voitures;       // Liste de voitures appartenant au client
+    int nb_voitures;               // Nombre de voitures
+    int paiement_carte;            // 1 pour carte enregistrée, 0 sinon
+};
+typedef struct client CLIENT;
+                </code></pre>
+                <p>Cette structure représente un client, incluant son nom, une liste de ses voitures, le nombre de
+                    voitures et un indicateur de paiement par carte.</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Structure <code>localisation</code></h3>
+                <pre><code class="c">
+struct localisation {
+    double longitude;
+    double latitude;
+};
+typedef struct localisation LOCALISATION;
+                </code></pre>
+                <p>Cette structure représente une localisation géographique avec des coordonnées de longitude et
+                    latitude.</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Structure <code>reservation</code></h3>
+                <pre><code class="c">
+struct reservation {
+    STATION* station;              // Station réservée
+    VOITURE* voiture;              // Voiture réservée
+    CLIENT* utilisateur;           // Utilisateur qui fait la réservation
+};
+typedef struct reservation RESERVATION;
+                </code></pre>
+                <p>Cette structure représente une réservation, incluant la station de recharge, la voiture et
+                    l'utilisateur.</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Structures Indépendantes</h3>
+                <pre><code class="c">
+struct maintenance {
+    STATION* station;          // Station concernée
+    char date[20];             // Date de la maintenance (format: JJ/MM/AAAA)
+    char description[200];     // Description des travaux effectués
+};
+typedef struct maintenance MAINTENANCE;
+
+struct billing {
+    CLIENT* client;            // Client concerné
+    double montant;            // Montant facturé
+    char date_facture[20];     // Date de la facture (format: JJ/MM/AAAA)
+};
+typedef struct billing BILLING;
+
+struct feedback {
+    CLIENT* client;            // Client qui donne le feedback
+    char commentaire[500];     // Commentaire ou retour d'expérience
+    int note;                   // Note sur 5
+};
+typedef struct feedback FEEDBACK;
+                </code></pre>
+                <p>Ces structures représentent des entités indépendantes telles que les enregistrements de maintenance,
+                    les informations de facturation et les retours des clients, sans relation directe avec les
+                    structures principales.</p>
+            </div>
+        </section>
+
+        <section id="functions" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-700 mb-4">3. Fonctions</h2>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Fonctions de Recherche</h3>
+                <pre><code class="c">
+void rechercher_station_par_nom(const char* nom);
+void rechercher_voiture_par_modele(const char* modele);
+void rechercher_client_par_nom(const char* nom_prenom);
+                </code></pre>
+                <p>Ces fonctions permettent de rechercher des stations, des voitures et des clients par leur nom ou
+                    modèle respectif.</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Fonctions de Gestion des Réservations et Paiements
+                </h3>
+                <pre><code class="c">
+void reserver_station(RESERVATION* reservation);
+void effectuer_paiement(CLIENT* client, double montant);
+void annuler_reservation(RESERVATION* reservation);
+STATION* obtenir_station_meilleur_feedback(FEEDBACK feedbacks[], int nb_feedbacks, STATION stations[], int nb_stations);
+void afficher_stations_proches(LOCALISATION localisation_client, STATION stations[], int nb_stations);
+                </code></pre>
+                <p>Ces fonctions permettent de réserver une station, effectuer un paiement et annuler une réservation. afficher les stations la plus proche d'une localisation , afficher la station avec le meilleure feedback
+                </p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-green-600 mb-2">Fonction d'Affichage du Menu</h3>
+                <pre><code class="c">
+void afficher_menu() {
+    printf("\n---- Menu de l'Application ----\n");
+    printf("1. Rechercher une station\n");
+    printf("2. Réserver une station\n");
+    printf("3. Effectuer un paiement\n");
+    printf("0. Quitter\n");
+}
+                </code></pre>
+                <p>Cette fonction affiche le menu principal de l'application avec les options disponibles.</p>
+            </div>
+        </section>
+
+        <section id="main-function" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-700 mb-4">4. Fonction Principale</h2>
+            <pre><code class="c">
+int main() {
+    int choix;
+
+    do {
+        afficher_menu();
+        printf("Entrez votre choix : ");
+        scanf("%d", &choix);
+        switch (choix) {
+            case 1:
+                printf("Recherche de station\n");
+                // Appeler la fonction de recherche de station ici
+                break;
+            case 2:
+                printf("Réservation\n");
+                // Appeler la fonction de réservation ici
+                break;
+            case 3:
+                printf("Paiement\n");
+                // Appeler la fonction de paiement ici
+                break;
+            case 0:
+                printf("Quitter l'application.\n");
+                break;
+            default:
+                printf("Choix non valide, veuillez réessayer.\n");
+        }
+    } while (choix != 0);
+
+    return 0;
+}
+            </code></pre>
+            <p>La fonction principale exécute le programme, affiche le menu et traite les choix de l'utilisateur.</p>
+        </section>
+
+        <!-- Section Diagramme de Classe -->
+        <section id="class-diagram" class="mb-8">
+            <h2 class="text-2xl font-semibold text-green-700 mb-4">5. Diagramme de Classe</h2>
+            <p>Le diagramme de classe suivant représente les principales entités de notre système de gestion de recharge
+                de voitures électriques.</p>
+            <img src="imgs/class_diagram_prog.png" alt="Diagramme de Classe" class="w-full mt-4 rounded shadow">
+        </section>
+
+       
+
+        <script>
+            // Fonction pour télécharger le contenu en PDF
+            async function downloadPDF() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'pt', 'a4');
+                // Sélectionner le contenu principal
+                const content = document.querySelector('.main-content');
+
+                // Utiliser html2canvas pour capturer le contenu avec les styles appliqués
+                await doc.html(content, {
+                    callback: function (doc) {
+                        doc.save('documentation.pdf');
+                    },
+                    margin: [20, 20, 20, -80],
+                    autoPaging: 'text',
+                    x: 10,
+                    y: 10,
+                    html2canvas: { scale: 0.5 }
+                });
+            }
+        </script>
+    </div>
+    <section id="download-pdf" class="mb-8">
+        <button class="pdf-button bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
+            onclick="downloadPDF()">Télécharger en PDF</button>
+    </section>
+
+    <!-- Inclusion de la bibliothèque html2canvas pour une meilleure capture du rendu PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+
+</html>
